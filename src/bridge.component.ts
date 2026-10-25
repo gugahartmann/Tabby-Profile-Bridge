@@ -1,8 +1,9 @@
 import { Component } from '@angular/core'
 import { ConfigService, ProfilesService, Profile, ProfileGroup, PartialProfile, PartialProfileGroup } from 'tabby-core'
 const core = require('./bridgeCore')
+const moba = require('./mobaCore')
 interface Node { id:string;name:string;level:number;count:number;expanded:boolean;selected:boolean;partial:boolean;children:Node[];profiles:any[] }
-interface ImportFile { name:string;mode:'root'|'folder';folder:string;rows:any[];preview:any[] }
+interface ImportFile { name:string;mode:'root'|'folder';folder:string;rows:any[];preview:any[];warnings:string[] }
 @Component({template:require('./bridge.component.pug')})
 export class BridgeComponent {
     tab:'export'|'import'='export'
@@ -67,7 +68,7 @@ export class BridgeComponent {
     get selected():any[]{return this.profiles.filter(p=>this.chosenIds.has(p.id))}
     toggleUser(name:string,checked:boolean):void{if(checked)this.sharedUsers.add(name);else this.sharedUsers.delete(name)}
     matches(name:string):boolean{return !this.search||name.toLowerCase().includes(this.search.toLowerCase())}
-    private download(name:string,content:string,type:string):void{
+    private download(name:string,content:string|Uint8Array,type:string):void{
         const blob=new Blob([content],{type})
         const url=URL.createObjectURL(blob),link=document.createElement('a')
         link.href=url;link.download=name;document.body.appendChild(link);link.click();link.remove()
@@ -80,13 +81,12 @@ export class BridgeComponent {
             if(folder && (folder.includes('/')||folder.includes('\\')))throw Error('Container folder may not contain slashes')
             const rows=core.rowsForExport(this.profiles,this.groups,this.chosenIds,this.sharedUsers,folder)
             const content=this.format==='csv'?core.stringifyCSV(rows):this.exportMoba(rows)
-            this.download('tabby-profile-bridge.'+(this.format==='csv'?'csv':'mxtsessions'),content,'text/plain;charset=utf-8')
+            this.download('tabby-profile-bridge.'+(this.format==='csv'?'csv':'mxtsessions'),content,this.format==='csv'?'text/csv;charset=utf-8':'application/octet-stream')
             this.info='Exported '+rows.length+' sessions without passwords or private keys.'
         }catch(e){this.error=String(e.message||e)}
     }
-    private exportMoba(rows:any[]):string{
-        // Replaced by Moba adapter in v0.2.
-        throw Error('MobaXterm export will be available in v0.2')
+    private exportMoba(rows:any[]):Uint8Array{
+        return moba.writeMoba(rows)
     }
     async onFiles(event:Event):Promise<void>{
         this.error='';this.info=''
@@ -95,9 +95,11 @@ export class BridgeComponent {
         try{
             for(const file of picked){
                 if(file.size>core.MAX_BYTES)throw Error('File exceeds 5 MB: '+file.name)
-                if(!/\.csv$/i.test(file.name))throw Error('Unsupported file: '+file.name)
-                const rows=core.readCSV(await file.text())
-                const item:ImportFile={name:file.name,mode:'root',folder:file.name.replace(/\.[^.]+$/,''),rows,preview:[]}
+                if(!/\.(csv|mxtsessions)$/i.test(file.name))throw Error('Unsupported file: '+file.name)
+                const isMoba=/\.mxtsessions$/i.test(file.name)
+                const parsed=isMoba?moba.readMoba(new Uint8Array(await file.arrayBuffer())):{rows:core.readCSV(await file.text()),warnings:[]}
+                const rows=parsed.rows
+                const item:ImportFile={name:file.name,mode:'root',folder:file.name.replace(/\.[^.]+$/,''),rows,preview:[],warnings:parsed.warnings}
                 this.files.push(item)
                 this.refreshPreview(item)
             }

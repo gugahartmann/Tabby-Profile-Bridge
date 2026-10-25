@@ -4,6 +4,15 @@
 
 Import and export Tabby SSH/Telnet sessions, preserving nested profile groups. Inspired by Tabby Profile Share (https://github.com/gugahartmann/Tabby_Profile_Share).
 
+## v0.2.0 — MobaXterm
+
+- Import and export MobaXterm .mxtsessions files (SSH and Telnet).
+- Preserve hierarchical folders, names, hostnames, ports, usernames and basic X11 setting.
+- Read MobaXterm CP1252 files, including older session field counts, and write CRLF/CP1252 output.
+- Show warnings when advanced settings cannot be represented. Deliberately never export passwords, key paths, gateways, macros, SSH algorithms or terminal colors to .mxtsessions.
+- Reject group/session names containing unsupported delimiters instead of writing corrupt exports.
+- MobaXterm export is based on a documented Moba 23.6-compatible subset; verification in a real MobaXterm installation is recommended.
+
 ## v0.1.0 — CSV
 
 - Select sessions or entire nested folder trees and choose which usernames may be exported.
@@ -15,7 +24,7 @@ Import and export Tabby SSH/Telnet sessions, preserving nested profile groups. I
 - Edit SSH usernames individually or convert users in bulk.
 - Export only whitelisted algorithm and terminal settings as JSON in CSV cells, NEVER passwords, private key content, private key paths or scripts.
 
-**Limits:** 5 MB/file; 10,000 sessions/file; 32 folder levels. MobaXterm (.mxtsessions) added in v0.2.
+**Limits:** 5 MB/file; 10,000 sessions/file; 32 folder levels. MobaXterm (.mxtsessions) available in v0.2.
 
 ## Installation and testing
 
@@ -36,6 +45,6 @@ All import files are treated as untrusted data, validated before changing config
 
 ## Roadmap
 
-v0.2: MobaXterm (.mxtsessions) import/export. Later adapters: SecureCRT, mRemoteNG, PuTTY and others.
+v0.1: CSV; v0.2: MobaXterm (.mxtsessions). Later adapters: SecureCRT, mRemoteNG, PuTTY and others.
 
 MIT © 2026 gugahartmann.

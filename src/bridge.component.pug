@@ -47,12 +47,14 @@ div.p-3
             label.form-label.mb-0(for='bridge-format') Format
             select.form-select(style='max-width:220px',id='bridge-format',[(ngModel)]='format')
                 option(value='csv') CSV (.csv)
-        p.small.text-muted Algorithms and safe terminal options are JSON strings in CSV cells. Group colors/icons are ignored.
+                option(value='mxtsessions') MobaXterm (.mxtsessions)
+        p.small.text-muted(*ngIf='format==="csv"') Algorithms and safe terminal options are JSON strings in CSV cells. Group colors/icons are ignored.
+        p.small.text-muted(*ngIf='format==="mxtsessions"') MobaXterm export includes names, hierarchy, hosts, ports, usernames and X11. Other advanced options, icons/colors and secrets are omitted.
         button.btn.btn-primary([disabled]='!selected.length||busy',(click)='exportFile()') Export {{selected.length}} profiles
     div(*ngIf='tab==="import"')
-        h4 Add CSV files
+        h4 Add CSV or MobaXterm files
         p.text-muted Import each file at the root or inside its own container folder. Review conflicts individually; existing profiles are never replaced automatically.
-        input.form-control.mb-3(type='file',multiple,accept='.csv,text/csv',(change)='onFiles($event)')
+        input.form-control.mb-3(type='file',multiple,accept='.csv,.mxtsessions,text/csv',(change)='onFiles($event)')
         .card.mb-3(*ngFor='let file of files')
             .card-body
                 .d-flex.justify-content-between
@@ -66,6 +68,7 @@ div.p-3
                     label.form-check-label Import inside one parent folder
                 input.form-control.mt-2(*ngIf='file.mode==="folder"',[(ngModel)]='file.folder',(ngModelChange)='refreshPreview(file)',maxlength='256',placeholder='Parent folder')
                 .small.text-muted.mt-2 {{file.preview.filter(p=>p.matchedId).length}} matching names in destination
+                .alert.alert-warning.mt-2(*ngIf='file.warnings.length') {{file.warnings.length}} MobaXterm entries/options were not converted; first: {{file.warnings[0]}}
         div(*ngIf='files.length')
             h4 Bulk username conversion
             .row.g-2.mb-3
