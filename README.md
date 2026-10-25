@@ -4,6 +4,11 @@
 
 Import and export Tabby SSH/Telnet sessions, preserving nested profile groups. Inspired by Tabby Profile Share (https://github.com/gugahartmann/Tabby_Profile_Share).
 
+## v0.2.1 — Angular template hotfix
+
+- Fix Angular JIT `Bindings cannot contain assignments` error when opening the plugin.
+- CI now parses the generated Pug template with Angular 15 compiler to prevent this regression.
+
 ## v0.2.0 — MobaXterm
 
 - Import and export MobaXterm .mxtsessions files (SSH and Telnet).

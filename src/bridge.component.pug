@@ -67,7 +67,7 @@ div.p-3
                     input.form-check-input(type='radio',[name]='"mode-"+file.name',value='folder',[(ngModel)]='file.mode',(change)='refreshPreview(file)')
                     label.form-check-label Import inside one parent folder
                 input.form-control.mt-2(*ngIf='file.mode==="folder"',[(ngModel)]='file.folder',(ngModelChange)='refreshPreview(file)',maxlength='256',placeholder='Parent folder')
-                .small.text-muted.mt-2 {{file.preview.filter(p=>p.matchedId).length}} matching names in destination
+                .small.text-muted.mt-2 {{ countMatches(file) }} matching names in destination
                 .alert.alert-warning.mt-2(*ngIf='file.warnings.length') {{file.warnings.length}} MobaXterm entries/options were not converted; first: {{file.warnings[0]}}
         div(*ngIf='files.length')
             h4 Bulk username conversion

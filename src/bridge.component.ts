@@ -110,6 +110,7 @@ export class BridgeComponent {
         file.preview=core.makePreview(file.rows,this.profiles,this.groups,file.mode==='folder'?file.folder.trim():'')
     }
     removeFile(file:ImportFile):void{this.files=this.files.filter(f=>f!==file)}
+    countMatches(file:ImportFile):number{return file.preview.filter(profile=>Boolean(profile.matchedId)).length}
     get importCount():number{return this.files.reduce((n,f)=>n+f.preview.filter(p=>p.action!=='skip').length,0)}
     get importedCount():number{return this.files.reduce((n,f)=>n+f.preview.length,0)}
     applyBulkUser():void{
