@@ -44,7 +44,8 @@
     "webpack-cli": "^5.1.0",
     "tabby-core": "^1.0.231-nightly.0",
     "tabby-settings": "^1.0.231-nightly.0",
-    "@angular/compiler": "^15.0.0"
+    "@angular/compiler": "^15.0.0",
+    "js-yaml": "^4.1.0"
   },
   "author": "gugahartmann",
   "repository": {

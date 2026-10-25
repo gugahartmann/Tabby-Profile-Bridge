@@ -1,13 +1,15 @@
 import { Component } from '@angular/core'
 import { ConfigService, ProfilesService, Profile, ProfileGroup, PartialProfile, PartialProfileGroup } from 'tabby-core'
 const core = require('./bridgeCore')
-const moba = require('./mobaCore')
+const formats = require('./exchangeFormats')
 interface Node { id:string;name:string;level:number;count:number;expanded:boolean;selected:boolean;partial:boolean;children:Node[];profiles:any[] }
 interface ImportFile { name:string;mode:'root'|'folder';folder:string;rows:any[];preview:any[];warnings:string[] }
 @Component({template:require('./bridge.component.pug')})
 export class BridgeComponent {
     tab:'export'|'import'='export'
-    format:'csv'|'mxtsessions'='csv'
+    format='csv'
+    supportedFormats:any[]=formats.FORMATS
+    acceptedExtensions:string=formats.FORMATS.map(f=>f.extension).join(',')
     profiles:any[]=[]
     groups:any[]=[]
     nodes:Node[]=[]
@@ -80,13 +82,11 @@ export class BridgeComponent {
             const folder=this.exportMode==='folder'?this.exportFolder.trim():''
             if(folder && (folder.includes('/')||folder.includes('\\')))throw Error('Container folder may not contain slashes')
             const rows=core.rowsForExport(this.profiles,this.groups,this.chosenIds,this.sharedUsers,folder)
-            const content=this.format==='csv'?core.stringifyCSV(rows):this.exportMoba(rows)
-            this.download('tabby-profile-bridge.'+(this.format==='csv'?'csv':'mxtsessions'),content,this.format==='csv'?'text/csv;charset=utf-8':'application/octet-stream')
+            const adapter=formats.getFormat(this.format)
+            const content=adapter.encode(rows)
+            this.download('tabby-profile-bridge'+adapter.extension,content,adapter.mimeType)
             this.info='Exported '+rows.length+' sessions without passwords or private keys.'
         }catch(e){this.error=String(e.message||e)}
-    }
-    private exportMoba(rows:any[]):Uint8Array{
-        return moba.writeMoba(rows)
     }
     async onFiles(event:Event):Promise<void>{
         this.error='';this.info=''
@@ -95,9 +95,9 @@ export class BridgeComponent {
         try{
             for(const file of picked){
                 if(file.size>core.MAX_BYTES)throw Error('File exceeds 5 MB: '+file.name)
-                if(!/\.(csv|mxtsessions)$/i.test(file.name))throw Error('Unsupported file: '+file.name)
-                const isMoba=/\.mxtsessions$/i.test(file.name)
-                const parsed=isMoba?moba.readMoba(new Uint8Array(await file.arrayBuffer())):{rows:core.readCSV(await file.text()),warnings:[]}
+                const adapter=formats.detectFormat(file.name)
+                const data=adapter.binary?new Uint8Array(await file.arrayBuffer()):await file.text()
+                const parsed=adapter.decode(data)
                 const rows=parsed.rows
                 const item:ImportFile={name:file.name,mode:'root',folder:file.name.replace(/\.[^.]+$/,''),rows,preview:[],warnings:parsed.warnings}
                 this.files.push(item)

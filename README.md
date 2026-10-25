@@ -31,6 +31,12 @@ Import and export Tabby SSH/Telnet sessions, preserving nested profile groups. I
 
 **Limits:** 5 MB/file; 10,000 sessions/file; 32 folder levels. MobaXterm (.mxtsessions) available in v0.2.
 
+## Format-independent round-trip test suite
+
+All supported import/export formats are validated against the same fictional YAML fixture (10 nested groups and 16 SSH sessions). Every test serializes the real export format, parses it again, creates the Tabby import plan and compares folder paths, names, hosts, ports and usernames. The suite also tests export/import wrapper folders, subset selections, redaction and conflict actions. Adding an adapter to `src/exchangeFormats.js` enrolls it in the matrix automatically.
+
+See [docs/ROUNDTRIP_TESTS.md](docs/ROUNDTRIP_TESTS.md) and run `npm test`.
+
 ## Installation and testing
 
 Inside Tabby use Settings → Plugins → search for tabby-profile-bridge (once published to npm). For local development: npm install --legacy-peer-deps; npm test; npm run build.
