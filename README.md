@@ -2,60 +2,72 @@
 
 **Your connections, across terminals.**
 
-Import and export Tabby SSH/Telnet sessions, preserving nested profile groups. Inspired by Tabby Profile Share (https://github.com/gugahartmann/Tabby_Profile_Share).
+Import and export SSH/Telnet profiles across Tabby, CSV, and MobaXterm while preserving nested folders.
 
-## v0.2.1 — Angular template hotfix
+**by gugahartmann** · [Português (Brasil)](README.pt-BR.md)
 
-- Fix Angular JIT `Bindings cannot contain assignments` error when opening the plugin.
-- CI now parses the generated Pug template with Angular 15 compiler to prevent this regression.
+## Features
 
-## v0.2.0 — MobaXterm
+- **CSV and MobaXterm** import/export (.csv and .mxtsessions).
+- **Nested folders**: select entire groups or individual sessions, retaining only necessary ancestor folders.
+- **Export destination**: preserve the root hierarchy or wrap selected sessions in a named parent folder.
+- **Per-file import destination**: import every source file into the root or its own parent folder.
+- **Conflict preview**: inspect the hostname, port, username and existing matches before choosing Keep / skip, Add as new, or Replace existing. Matching profiles are skipped by default.
+- **Bulk username conversion** before import, plus individual username editing.
+- **Privacy-first export**: usernames are excluded unless expressly selected. Passwords, private-key content/paths, login scripts, and proxy commands are not exported.
+- **Bilingual interface**: defaults to English and follows Tabby's selected Portuguese (pt-BR or pt-PT) locale, including Automatic language detection.
+- **Version attribution** at the upper-right of the plugin screen: by gugahartmann · vX.Y.Z.
 
-- Import and export MobaXterm .mxtsessions files (SSH and Telnet).
-- Preserve hierarchical folders, names, hostnames, ports, usernames and basic X11 setting.
-- Read MobaXterm CP1252 files, including older session field counts, and write CRLF/CP1252 output.
-- Show warnings when advanced settings cannot be represented. Deliberately never export passwords, key paths, gateways, macros, SSH algorithms or terminal colors to .mxtsessions.
-- Reject group/session names containing unsupported delimiters instead of writing corrupt exports.
-- MobaXterm export is based on a documented Moba 23.6-compatible subset; verification in a real MobaXterm installation is recommended.
+## Install
 
-## v0.1.0 — CSV
+After the package is published on npm, find **tabby-profile-bridge** in Tabby → Settings → Plugins. You can also obtain an installable .tgz from [GitHub Releases](https://github.com/gugahartmann/Tabby-Profile-Bridge/releases), using a plugin installation workflow supported by your Tabby version.
 
-- Select sessions or entire nested folder trees and choose which usernames may be exported.
-- Export to UTF-8 CSV with Excel BOM: group1, group2, other_groups, profile, protocol, hostname, port, username, auth, algorithms, settings.
-- First two folder levels are standalone columns; the remaining folder levels are slash-delimited with escaping.
-- Export at root or wrap the entire exported selection in one top-level folder.
-- Import multiple CSV files, each at root or inside its own container folder.
-- Review sessions before import. Existing sessions matching protocol + folder + name are skipped by default. Explicitly choose Add / Replace / Keep for each row.
-- Edit SSH usernames individually or convert users in bulk.
-- Export only whitelisted algorithm and terminal settings as JSON in CSV cells, NEVER passwords, private key content, private key paths or scripts.
+Open **Settings → Profile Bridge** after enabling the plugin.
 
-**Limits:** 5 MB/file; 10,000 sessions/file; 32 folder levels. MobaXterm (.mxtsessions) available in v0.2.
+## Export
 
-## Format-independent round-trip test suite
+1. Select the **Export** tab and tick the groups or individual SSH/Telnet sessions.
+2. Opt in to the usernames that may be included in the export.
+3. Select **Preserve hierarchy at root** or a named **parent folder**.
+4. Choose **CSV** or **MobaXterm** and export.
 
-All supported import/export formats are validated against the same fictional YAML fixture (10 nested groups and 16 SSH sessions). Every test serializes the real export format, parses it again, creates the Tabby import plan and compares folder paths, names, hosts, ports and usernames. The suite also tests export/import wrapper folders, subset selections, redaction and conflict actions. Adding an adapter to `src/exchangeFormats.js` enrolls it in the matrix automatically.
+## Import
 
-See [docs/ROUNDTRIP_TESTS.md](docs/ROUNDTRIP_TESTS.md) and run `npm test`.
+1. Select the **Import** tab and add one or more CSV or MobaXterm files.
+2. For **each file**, select import at the root or inside its own parent folder.
+3. Review the imported sessions and warnings.
+4. Optionally replace legacy usernames in bulk or edit them individually.
+5. Choose **Keep / skip**, **Add as new**, or **Replace existing** for each session before applying changes.
 
-## Installation and testing
+Matching name + protocol + folder defaults to Keep / skip. The same endpoint under another name or folder is flagged without automatic replacement. Back up Tabby before replacing existing connections.
 
-Inside Tabby use Settings → Plugins → search for tabby-profile-bridge (once published to npm). For local development: npm install --legacy-peer-deps; npm test; npm run build.
-GitHub Releases carry npm installable .tgz files. GitHub releases DO NOT publish packages to npm by themselves.
+## CSV fields
 
-## Example CSV (all data fictitious)
+| group1 | group2 | other_groups | profile | protocol | hostname | port | username |
+| --- | --- | --- | --- | --- | --- | --- | --- |
+| Region | City | POP / Core | CORE-01 | ssh | 192.0.2.10 | 30022 | netops |
+| Region | City | POP / Access | OLT-01 | ssh | 192.0.2.11 | 22 | |
 
-```csv
-group1,group2,other_groups,profile,protocol,hostname,port,username,auth,algorithms,settings
-South,Porto Alegre,POP01 / CORE,SW-CORE-01,ssh,192.0.2.10,30022,operator,agent,"{""kex"":[""diffie-hellman-group14-sha1""]}","{""term"":""xterm-256color""}"
-South,Porto Alegre,POP01 / CORE,BNG-01,ssh,192.0.2.11,22,,,,
-```
+Additional columns: **auth**, **algorithms**, and **settings** (safe JSON strings). The first two folder levels have dedicated columns. Deeper paths are encoded in other_groups with escaped slash delimiters. The IPs shown above are reserved example addresses.
 
-## Security
+## MobaXterm compatibility
 
-All import files are treated as untrusted data, validated before changing config. Formula-like CSV cells are escaped. Changes are best-effort transactional with rollback. The plugin does not import/export passwords, login scripts, private keys, key paths, proxy commands, or unsupported options. Replacing an existing profile intentionally discards its connection-specific secrets: back up Tabby first.
+Supports compatible SSH/Telnet bookmarks in .mxtsessions with names, nested folders, hostname/IP, custom ports, usernames, and basic X11. Advanced MobaXterm-specific settings may be omitted and unsupported data can be reported. Verify exported files in the target MobaXterm version before production use.
+
+## Security and limits
+
+Processing is local. Hostnames, IPs, and opt-in usernames may still be sensitive, so inspect files before sharing. Passwords, private-key content or paths, scripts, and proxy commands are never exported. Replacing a profile discards its previous connection-specific credentials.
+
+Import limit: **5 MB/file**, **10,000 profiles/file**, **32 folder levels**. MobaXterm may reject folder/session characters not supported by its format.
+
+## Documentation
+
+- [User Guide (English)](docs/USER_GUIDE.md)
+- [Guia do Usuário (Português do Brasil)](docs/GUIA_USUARIO.pt-BR.md)
+- [Changelog](CHANGELOG.md)
 
 ## Roadmap
 
-v0.1: CSV; v0.2: MobaXterm (.mxtsessions). Later adapters: SecureCRT, mRemoteNG, PuTTY and others.
+Future adapters: SecureCRT, mRemoteNG and other connection managers.
 
 MIT © 2026 gugahartmann.

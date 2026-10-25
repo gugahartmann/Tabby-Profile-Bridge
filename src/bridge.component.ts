@@ -1,7 +1,8 @@
 import { Component } from '@angular/core'
-import { ConfigService, ProfilesService, Profile, ProfileGroup, PartialProfile, PartialProfileGroup } from 'tabby-core'
+import { ConfigService, ProfilesService, LocaleService } from 'tabby-core'
 const core = require('./bridgeCore')
 const formats = require('./exchangeFormats')
+const i18n = require('./i18n')
 interface Node { id:string;name:string;level:number;count:number;expanded:boolean;selected:boolean;partial:boolean;children:Node[];profiles:any[] }
 interface ImportFile { name:string;mode:'root'|'folder';folder:string;rows:any[];preview:any[];warnings:string[] }
 @Component({template:require('./bridge.component.pug')})
@@ -25,7 +26,16 @@ export class BridgeComponent {
     error=''
     info=''
     busy=false
-    constructor(private profilesService:ProfilesService,private config:ConfigService){}
+    version:string=require('../package.json').version
+    // LocaleService returns the resolved language even when Tabby is set to Automatic.
+    language='en-US'
+    private localeSubscription:any
+    constructor(private profilesService:ProfilesService,private config:ConfigService,private locale:LocaleService){
+        this.language=this.locale.getLocale()
+        this.localeSubscription=this.locale.localeChanged$.subscribe(lang=>{this.language=lang})
+    }
+    t(key:string, params:any={}):string{return i18n.translate(this.language,key,params)}
+    ngOnDestroy():void{if(this.localeSubscription)this.localeSubscription.unsubscribe()}
     async ngOnInit():Promise<void>{ await this.reload() }
     async reload():Promise<void>{
         this.error=''
@@ -48,7 +58,7 @@ export class BridgeComponent {
         })
         this.nodes=make('',0,new Set())
         const ungrouped=this.profiles.filter(p=>!p.group||!valid.has(p.group))
-        if(ungrouped.length)this.nodes.push({id:'__root__',name:'Ungrouped',level:0,count:ungrouped.length,expanded:true,selected:false,partial:false,children:[],profiles:ungrouped})
+        if(ungrouped.length)this.nodes.push({id:'__root__',name:this.t('ungrouped'),level:0,count:ungrouped.length,expanded:true,selected:false,partial:false,children:[],profiles:ungrouped})
         this.chosenIds.clear();this.sharedUsers.clear();this.refresh()
     }
     visible():Node[]{const output:Node[]=[];const visit=(n:Node)=>{output.push(n);if(n.expanded)n.children.forEach(visit)};this.nodes.forEach(visit);return output}
@@ -80,12 +90,12 @@ export class BridgeComponent {
         this.error='';this.info=''
         try {
             const folder=this.exportMode==='folder'?this.exportFolder.trim():''
-            if(folder && (folder.includes('/')||folder.includes('\\')))throw Error('Container folder may not contain slashes')
+            if(folder && (folder.includes('/')||folder.includes('\\')))throw Error(this.t('invalidFolder'))
             const rows=core.rowsForExport(this.profiles,this.groups,this.chosenIds,this.sharedUsers,folder)
             const adapter=formats.getFormat(this.format)
             const content=adapter.encode(rows)
             this.download('tabby-profile-bridge'+adapter.extension,content,adapter.mimeType)
-            this.info='Exported '+rows.length+' sessions without passwords or private keys.'
+            this.info=this.t('exportedSuccess',{count:rows.length})
         }catch(e){this.error=String(e.message||e)}
     }
     async onFiles(event:Event):Promise<void>{
@@ -94,7 +104,7 @@ export class BridgeComponent {
         const picked=Array.from(input.files||[])
         try{
             for(const file of picked){
-                if(file.size>core.MAX_BYTES)throw Error('File exceeds 5 MB: '+file.name)
+                if(file.size>core.MAX_BYTES)throw Error(this.t('tooLarge',{file:file.name}))
                 const adapter=formats.detectFormat(file.name)
                 const data=adapter.binary?new Uint8Array(await file.arrayBuffer()):await file.text()
                 const parsed=adapter.decode(data)
@@ -115,7 +125,7 @@ export class BridgeComponent {
     get importedCount():number{return this.files.reduce((n,f)=>n+f.preview.length,0)}
     applyBulkUser():void{
         this.error=''
-        if(this.bulkTo.length>255){this.error='Username too long';return}
+        if(this.bulkTo.length>255){this.error=this.t('tooLongUser');return}
         for(const file of this.files)for(const p of file.preview){
             if(p.action!=='skip' && (this.bulkFrom==='*'||p.options.user===this.bulkFrom))p.editedUser=this.bulkTo
         }
@@ -127,7 +137,7 @@ export class BridgeComponent {
         this.error='';this.info='';this.busy=true
         try{
             const all=this.files.flatMap(f=>f.preview.filter(p=>p.action!=='skip'))
-            if(!all.length)throw Error('Select at least one profile to import')
+            if(!all.length)throw Error(this.t('selectImport'))
             const uid=()=>Math.random().toString(36).slice(2)+Date.now().toString(36)
             const plan=core.buildPlan(all,this.groups,uid)
             const oldProfiles=[...this.config.store.profiles],oldGroups=[...this.config.store.groups]
@@ -142,7 +152,7 @@ export class BridgeComponent {
                 try{await this.config.save()}catch(_){}
                 throw e
             }
-            this.info='Imported '+plan.creates.length+' new sessions, replaced '+plan.replaces.length+', created '+plan.groups.length+' folders.'
+            this.info=this.t('importedSuccess',{created:plan.creates.length,replaced:plan.replaces.length,groups:plan.groups.length})
             this.files=[];await this.reload()
         }catch(e){this.error=String(e.message||e)}
         finally{this.busy=false}

@@ -1,6 +1,6 @@
 {
   "name": "tabby-profile-bridge",
-  "version": "0.2.1",
+  "version": "0.2.2",
   "description": "Import and export SSH/Telnet profiles between Tabby, CSV and MobaXterm while preserving nested groups",
   "keywords": [
     "tabby-plugin",
