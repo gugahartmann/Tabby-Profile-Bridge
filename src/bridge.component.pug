@@ -1,0 +1,117 @@
+div.p-3
+    h2 Tabby Profile Bridge
+    p.text-muted Import, export and convert SSH/Telnet profiles across terminal clients. No passwords, login scripts, private key material or local key paths leave this app.
+    .btn-group.mb-3
+        button.btn([class.btn-primary]='tab==="export"',[class.btn-outline-secondary]='tab!=="export"',(click)='tab="export"') Export
+        button.btn([class.btn-primary]='tab==="import"',[class.btn-outline-secondary]='tab!=="import"',(click)='tab="import"') Import
+    .alert.alert-danger(*ngIf='error') {{error}}
+    .alert.alert-success(*ngIf='info') {{info}}
+    div(*ngIf='tab==="export"')
+        .d-flex.justify-content-between.align-items-center.mb-2
+            h4 Select folders and sessions
+            div
+                button.btn.btn-sm.btn-outline-secondary.me-2((click)='selectAll(true)') Select all
+                button.btn.btn-sm.btn-outline-secondary((click)='selectAll(false)') Clear
+        input.form-control.mb-2(type='search',placeholder='Filter by name (selection is preserved)',[(ngModel)]='search')
+        .border.rounded.p-2.mb-3(style='max-height:320px;overflow-y:auto')
+            ng-container(*ngFor='let node of visible()')
+                .d-flex.align-items-center.mb-1(*ngIf='matches(node.name)||!search')
+                    button.btn.btn-sm.btn-link.p-0.me-1(*ngIf='node.children.length',(click)='node.expanded=!node.expanded') {{node.expanded ? '▾' : '▸'}}
+                    span.me-2(*ngIf='!node.children.length') 📁
+                    input.form-check-input.me-2(type='checkbox',[checked]='node.selected',[indeterminate]='node.partial',(change)='toggleGroup(node,$any($event.target).checked)')
+                    strong {{node.name}}
+                    small.text-muted.ms-2 ({{node.count}})
+                ng-container(*ngIf='node.expanded')
+                    .d-flex.align-items-center.mb-1(*ngFor='let profile of node.profiles',[style.paddingLeft.px]='(node.level+1)*20+13')
+                        ng-container(*ngIf='matches(profile.name)||matches(profile.options?.host||"")')
+                            input.form-check-input.me-2(type='checkbox',[checked]='chosenIds.has(profile.id)',(change)='toggleProfile(profile,$any($event.target).checked)')
+                            span.me-2 🖥
+                            span {{profile.name}}
+                            small.text-muted.ms-2 {{profile.type}} · {{profile.options?.host}}:{{profile.options?.port}}
+        h4 Export usernames
+        p.text-muted Usernames are excluded by default. Select shared service accounts explicitly.
+        .border.rounded.p-2.mb-3(style='max-height:190px;overflow-y:auto')
+            .text-muted(*ngIf='!users.length') Select sessions to list their usernames.
+            .form-check(*ngFor='let item of users')
+                input.form-check-input(type='checkbox',[checked]='sharedUsers.has(item.user)',(change)='toggleUser(item.user,$any($event.target).checked)')
+                label.form-check-label {{item.user}} — {{item.count}} sessions
+        h4 Export destination folder
+        .form-check.mb-2
+            input.form-check-input(type='radio',name='exportMode',value='root',[(ngModel)]='exportMode',id='exp-root')
+            label.form-check-label(for='exp-root') Preserve hierarchy at root
+        .form-check.mb-2
+            input.form-check-input(type='radio',name='exportMode',value='folder',[(ngModel)]='exportMode',id='exp-folder')
+            label.form-check-label(for='exp-folder') Wrap selected sessions in one top-level folder
+        input.form-control.mb-3(*ngIf='exportMode==="folder"',[(ngModel)]='exportFolder',placeholder='Top-level folder name',maxlength='256')
+        .d-flex.gap-2.align-items-center.mb-3
+            label.form-label.mb-0(for='bridge-format') Format
+            select.form-select(style='max-width:220px',id='bridge-format',[(ngModel)]='format')
+                option(value='csv') CSV (.csv)
+        p.small.text-muted Algorithms and safe terminal options are JSON strings in CSV cells. Group colors/icons are ignored.
+        button.btn.btn-primary([disabled]='!selected.length||busy',(click)='exportFile()') Export {{selected.length}} profiles
+    div(*ngIf='tab==="import"')
+        h4 Add CSV files
+        p.text-muted Import each file at the root or inside its own container folder. Review conflicts individually; existing profiles are never replaced automatically.
+        input.form-control.mb-3(type='file',multiple,accept='.csv,text/csv',(change)='onFiles($event)')
+        .card.mb-3(*ngFor='let file of files')
+            .card-body
+                .d-flex.justify-content-between
+                    h5 {{file.name}} — {{file.preview.length}} sessions
+                    button.btn.btn-sm.btn-outline-danger((click)='removeFile(file)') Remove
+                .form-check
+                    input.form-check-input(type='radio',[name]='"mode-"+file.name',value='root',[(ngModel)]='file.mode',(change)='refreshPreview(file)')
+                    label.form-check-label Import into Tabby root (keep source hierarchy)
+                .form-check
+                    input.form-check-input(type='radio',[name]='"mode-"+file.name',value='folder',[(ngModel)]='file.mode',(change)='refreshPreview(file)')
+                    label.form-check-label Import inside one parent folder
+                input.form-control.mt-2(*ngIf='file.mode==="folder"',[(ngModel)]='file.folder',(ngModelChange)='refreshPreview(file)',maxlength='256',placeholder='Parent folder')
+                .small.text-muted.mt-2 {{file.preview.filter(p=>p.matchedId).length}} matching names in destination
+        div(*ngIf='files.length')
+            h4 Bulk username conversion
+            .row.g-2.mb-3
+                .col-md-4
+                    label.form-label Original username
+                    select.form-select([(ngModel)]='bulkFrom')
+                        option(value='*') All imported usernames
+                        option(*ngFor='let name of importedUsers',[value]='name') {{name || '(empty)'}}
+                .col-md-4
+                    label.form-label New username
+                    input.form-control([(ngModel)]='bulkTo',maxlength='255',placeholder='New SSH username')
+                .col-md-4.d-flex.align-items-end
+                    button.btn.btn-outline-primary.w-100((click)='applyBulkUser()') Apply to selected imports
+            .d-flex.justify-content-between.align-items-center.mb-2
+                h4 Review {{importedCount}} imported profiles
+                .btn-group
+                    button.btn.btn-sm.btn-outline-secondary((click)='setAllActions("skip")') Skip all
+                    button.btn.btn-sm.btn-outline-secondary((click)='setAllActions("create")') Create all
+            .border.rounded.mb-3(style='max-height:370px;overflow:auto')
+                table.table.table-sm.table-striped.mb-0
+                    thead
+                        tr
+                            th Session
+                            th Host : port
+                            th Username
+                            th Existing match
+                            th Action
+                    tbody
+                        ng-container(*ngFor='let file of files')
+                            tr(*ngFor='let row of file.preview')
+                                td
+                                    strong {{row.name}}
+                                    .small.text-muted {{row.path.join(" / ") || "(root)"}}
+                                td
+                                    span {{row.options.host}}:{{row.options.port}}
+                                    .small.text-muted {{row.type}}
+                                td
+                                    input.form-control.form-control-sm([ngModel]='row.editedUser===undefined?row.options.user:row.editedUser',(ngModelChange)='row.editedUser=$event',maxlength='255')
+                                td
+                                    span.text-warning(*ngIf='row.matchedId') Same name / folder
+                                    span.text-muted(*ngIf='!row.matchedId&&row.sameEndpointId') Same endpoint elsewhere
+                                    span.text-muted(*ngIf='!row.matchedId&&!row.sameEndpointId') New
+                                td
+                                    select.form-select.form-select-sm([(ngModel)]='row.action')
+                                        option(value='skip') Keep / skip
+                                        option(value='create') Add as new
+                                        option(*ngIf='row.matchedId',value='replace') Replace existing
+            p.small.text-muted Replacing a profile discards its existing connection-specific credentials. Back up your Tabby configuration first. No file is ever executed.
+            button.btn.btn-primary([disabled]='!importCount||busy',(click)='performImport()') {{busy ? 'Importing...' : 'Apply '+importCount+' selected changes'}}
