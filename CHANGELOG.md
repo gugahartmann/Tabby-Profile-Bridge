@@ -1,5 +1,11 @@
 # Changelog
 
+## v0.2.3 — npm listing and screenshots
+- Publish documentation refresh with two real Tabby import/export screenshots.
+- Use absolute GitHub-hosted screenshot URLs so images render in the npm README.
+- Include English and Portuguese READMEs in the npm package.
+- No functional change to SSH/Telnet import/export.
+
 ## v0.2.2 — Bilingual interface and documentation
 - English-default UI with Portuguese translation following Tabby's effective locale.
 - Live updates for pt-BR and pt-PT, including automatic Tabby language selection.

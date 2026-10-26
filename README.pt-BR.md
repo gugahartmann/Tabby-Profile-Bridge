@@ -4,8 +4,8 @@
 
 Importe e exporte perfis SSH/Telnet entre o Tabby, arquivos CSV e o MobaXterm, preservando a hierarquia das pastas.
 
-**by gugahartmann** · [English](README.md)
-## Versão atual — v0.2.2
+**by gugahartmann** · [English](https://github.com/gugahartmann/Tabby-Profile-Bridge/blob/main/README.md)
+## Versão atual — v0.2.3
 
 **O Profile Bridge permite trocar perfis SSH/Telnet entre o Tabby e outros terminais**, com suporte a CSV e arquivos `.mxtsessions` do MobaXterm.
 
@@ -20,7 +20,7 @@ Importe e exporte perfis SSH/Telnet entre o Tabby, arquivos CSV e o MobaXterm, p
 
 **Validação prática:** o fluxo Tabby → MobaXterm → Tabby já foi testado manualmente com o plugin. Recursos avançados específicos do MobaXterm ainda podem exigir conferência individual.
 
-[**Baixar v0.2.2**](https://github.com/gugahartmann/Tabby-Profile-Bridge/releases/tag/v0.2.2) · [Notas da versão](docs/releases/v0.2.2.md) · [Texto de divulgação](docs/TABBY_COMMUNITY_ANNOUNCEMENT.md)
+[**Baixar v0.2.3**](https://github.com/gugahartmann/Tabby-Profile-Bridge/releases/tag/v0.2.3) · [Notas da versão](docs/releases/v0.2.3.md) · [Texto de divulgação](https://github.com/gugahartmann/Tabby-Profile-Bridge/blob/main/docs/TABBY_COMMUNITY_ANNOUNCEMENT.md)
 
 
 
@@ -28,11 +28,11 @@ Importe e exporte perfis SSH/Telnet entre o Tabby, arquivos CSV e o MobaXterm, p
 
 **Exportação — escolha os grupos e perfis que deseja compartilhar**
 
-![Exportação no Tabby Profile Bridge: grupos, perfis SSH, usuários e formato MobaXterm](docs/screenshots/tabby-export.png)
+![Exportação no Tabby Profile Bridge: grupos, perfis SSH, usuários e formato MobaXterm](https://raw.githubusercontent.com/gugahartmann/Tabby-Profile-Bridge/main/docs/screenshots/tabby-export.png)
 
 **Importação — revise os perfis, altere usuários e decida como tratar as conexões existentes**
 
-![Importação no Tabby Profile Bridge: sessões do MobaXterm e revisão de conflitos](docs/screenshots/tabby-import.png)
+![Importação no Tabby Profile Bridge: sessões do MobaXterm e revisão de conflitos](https://raw.githubusercontent.com/gugahartmann/Tabby-Profile-Bridge/main/docs/screenshots/tabby-import.png)
 
 ## Funcionalidades
 
@@ -90,9 +90,9 @@ Limites: **5 MB/arquivo**, **10.000 perfis/arquivo**, **32 níveis de pasta**. O
 
 ## Documentação
 
-- [Guia do Usuário (português)](docs/GUIA_USUARIO.pt-BR.md)
-- [User Guide (English)](docs/USER_GUIDE.md)
-- [Histórico de versões](CHANGELOG.md)
+- [Guia do Usuário (português)](https://github.com/gugahartmann/Tabby-Profile-Bridge/blob/main/docs/GUIA_USUARIO.pt-BR.md)
+- [User Guide (English)](https://github.com/gugahartmann/Tabby-Profile-Bridge/blob/main/docs/USER_GUIDE.md)
+- [Histórico de versões](https://github.com/gugahartmann/Tabby-Profile-Bridge/blob/main/CHANGELOG.md)
 
 ## Próximas integrações
 

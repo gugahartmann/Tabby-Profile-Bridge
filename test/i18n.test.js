@@ -41,7 +41,7 @@ test('plugin follows Tabby LocaleService and displays installed package version 
     assert.match(ts,/localeSubscription\.unsubscribe\(\)/)
     assert.match(ts,/require\('\.\.\/package\.json'\)\.version/)
     assert.match(template,/by gugahartmann .* v\{\{version\}\}/)
-    assert.equal(require('../package.json').version,'0.2.2')
+    assert.equal(require('../package.json').version,'0.2.3')
 })
 test('neither public README refers to the internal round-trip test suite',()=>{
     for(const file of ['README.md','README.pt-BR.md']){

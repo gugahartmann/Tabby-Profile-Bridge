@@ -4,8 +4,8 @@
 
 Import and export SSH/Telnet profiles across Tabby, CSV, and MobaXterm while preserving nested folders.
 
-**by gugahartmann** · [Português (Brasil)](README.pt-BR.md)
-## Latest release — v0.2.2
+**by gugahartmann** · [Português (Brasil)](https://github.com/gugahartmann/Tabby-Profile-Bridge/blob/main/README.pt-BR.md)
+## Latest release — v0.2.3
 
 **Profile Bridge is now available as a bilingual SSH/Telnet session exchange plugin for Tabby**, with CSV and MobaXterm `.mxtsessions` support.
 
@@ -20,7 +20,7 @@ Import and export SSH/Telnet profiles across Tabby, CSV, and MobaXterm while pre
 
 **Real-world check:** a Tabby → MobaXterm → Tabby exchange has been manually validated with the plugin. MobaXterm-specific advanced settings may still require manual review.
 
-[**Download v0.2.2**](https://github.com/gugahartmann/Tabby-Profile-Bridge/releases/tag/v0.2.2) · [Release notes](docs/releases/v0.2.2.md) · [Community announcement](docs/TABBY_COMMUNITY_ANNOUNCEMENT.md)
+[**Download v0.2.3**](https://github.com/gugahartmann/Tabby-Profile-Bridge/releases/tag/v0.2.3) · [Release notes](docs/releases/v0.2.3.md) · [Community announcement](https://github.com/gugahartmann/Tabby-Profile-Bridge/blob/main/docs/TABBY_COMMUNITY_ANNOUNCEMENT.md)
 
 
 
@@ -28,11 +28,11 @@ Import and export SSH/Telnet profiles across Tabby, CSV, and MobaXterm while pre
 
 **Export — choose exactly which groups and profiles to share**
 
-![Tabby Profile Bridge export: selected SSH profiles, nested folders, usernames and MobaXterm format](docs/screenshots/tabby-export.png)
+![Tabby Profile Bridge export: selected SSH profiles, nested folders, usernames and MobaXterm format](https://raw.githubusercontent.com/gugahartmann/Tabby-Profile-Bridge/main/docs/screenshots/tabby-export.png)
 
 **Import — review profiles, edit usernames and decide how to handle existing connections**
 
-![Tabby Profile Bridge import: MobaXterm sessions and per-profile conflict review](docs/screenshots/tabby-import.png)
+![Tabby Profile Bridge import: MobaXterm sessions and per-profile conflict review](https://raw.githubusercontent.com/gugahartmann/Tabby-Profile-Bridge/main/docs/screenshots/tabby-import.png)
 
 ## Features
 
@@ -90,9 +90,9 @@ Import limit: **5 MB/file**, **10,000 profiles/file**, **32 folder levels**. Mob
 
 ## Documentation
 
-- [User Guide (English)](docs/USER_GUIDE.md)
-- [Guia do Usuário (Português do Brasil)](docs/GUIA_USUARIO.pt-BR.md)
-- [Changelog](CHANGELOG.md)
+- [User Guide (English)](https://github.com/gugahartmann/Tabby-Profile-Bridge/blob/main/docs/USER_GUIDE.md)
+- [Guia do Usuário (Português do Brasil)](https://github.com/gugahartmann/Tabby-Profile-Bridge/blob/main/docs/GUIA_USUARIO.pt-BR.md)
+- [Changelog](https://github.com/gugahartmann/Tabby-Profile-Bridge/blob/main/CHANGELOG.md)
 
 ## Roadmap
 
