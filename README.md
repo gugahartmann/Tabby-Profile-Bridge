@@ -24,6 +24,16 @@ Import and export SSH/Telnet profiles across Tabby, CSV, and MobaXterm while pre
 
 
 
+### Screenshots
+
+**Export — choose exactly which groups and profiles to share**
+
+![Tabby Profile Bridge export: selected SSH profiles, nested folders, usernames and MobaXterm format](docs/screenshots/tabby-export.png)
+
+**Import — review profiles, edit usernames and decide how to handle existing connections**
+
+![Tabby Profile Bridge import: MobaXterm sessions and per-profile conflict review](docs/screenshots/tabby-import.png)
+
 ## Features
 
 - **CSV and MobaXterm** import/export (.csv and .mxtsessions).
