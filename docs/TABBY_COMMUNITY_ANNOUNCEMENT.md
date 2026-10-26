@@ -1,27 +1,33 @@
-# Tabby community post — ready to publish
+# Tabby community post — Profile Bridge v0.2.3
 
-**Suggested title:** [Plugin] Tabby Profile Bridge — import/export MobaXterm and CSV profiles (EN/PT-BR)
-
-**Post body:**
+**Suggested title:** [Plugin] Tabby Profile Bridge v0.2.3 — Import/export MobaXterm and CSV sessions (EN/PT-BR)
 
 Hi Tabby community!
 
-I've been working on **Tabby Profile Bridge**, a plugin that helps move SSH/Telnet connection profiles between Tabby and other terminal clients. The current release supports **MobaXterm `.mxtsessions`** and **CSV**.
+I've released **Tabby Profile Bridge v0.2.3**, a community plugin for importing and exporting **SSH/Telnet connection profiles** between Tabby and other terminal clients.
 
-It supports:
-- Exporting selected sessions or entire folders while preserving nested group paths.
-- Importing multiple files at the root or into a separate parent folder for each file.
-- Reviewing possible duplicate profiles before choosing Keep, Add, or Replace.
-- Converting SSH usernames in bulk before import.
-- English and Portuguese interfaces, following Tabby's language settings.
-- Exports that omit passwords and private key material; usernames are opt-in.
+The current version supports **MobaXterm (`.mxtsessions`)** and **CSV**, and includes:
 
-I tested the complete **Tabby → MobaXterm → Tabby** workflow successfully with example sessions.
+- **Two-way import/export**, preserving nested folders and session details (hostname/IP, port and selected username).
+- **Selective export** of individual sessions or entire profile groups.
+- **Per-file import destinations**: import at the root or under a custom parent folder.
+- **Conflict preview**: review existing matches and explicitly choose **Keep, Add or Replace** for each session.
+- **Bulk username conversion** before importing sessions from colleagues or legacy systems.
+- **English and Portuguese interfaces**, following Tabby's language settings.
+- **Privacy-conscious exports**: usernames are opt-in; passwords and private-key material/paths are omitted.
 
-Source and documentation: https://github.com/gugahartmann/Tabby-Profile-Bridge
+I successfully tested the **Tabby → MobaXterm → Tabby** round-trip using demo sessions. Some terminal-specific advanced settings are intentionally not converted.
 
-Release v0.2.2: https://github.com/gugahartmann/Tabby-Profile-Bridge/releases/tag/v0.2.2
+**Related project:** [Tabby Profile Share](https://github.com/gugahartmann/Tabby_Profile_Share) is its sibling plugin for sharing profiles directly **from Tabby to Tabby**, using a Tabby-oriented JSON package rather than converting to another terminal format.
 
-Feedback and suggestions are welcome, especially for future SecureCRT and mRemoteNG adapters. This is a community plugin and not an official Tabby feature.
+**Installation tip:** Since Profile Bridge is a new plugin, Tabby's plugin-list search/sorting can place it **near the end of the Available plugins list**. If you don't see it at first, scroll down or look for **`tabby-profile-bridge`**.
+
+**Project / screenshots:** https://github.com/gugahartmann/Tabby-Profile-Bridge
+
+**Latest release (v0.2.3):** https://github.com/gugahartmann/Tabby-Profile-Bridge/releases/tag/v0.2.3
+
+**npm:** https://www.npmjs.com/package/tabby-profile-bridge
+
+Feedback and feature requests are very welcome! Future adapters I'm considering include **SecureCRT, mRemoteNG, Xshell, and other session managers**. This is an independent community plugin, not an official Tabby feature.
 
 Thanks!
