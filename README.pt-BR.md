@@ -5,6 +5,24 @@
 Importe e exporte perfis SSH/Telnet entre o Tabby, arquivos CSV e o MobaXterm, preservando a hierarquia das pastas.
 
 **by gugahartmann** · [English](README.md)
+## Versão atual — v0.2.2
+
+**O Profile Bridge permite trocar perfis SSH/Telnet entre o Tabby e outros terminais**, com suporte a CSV e arquivos `.mxtsessions` do MobaXterm.
+
+| | Recurso | Como funciona |
+| --- | --- | --- |
+| ↔ | **Importação e exportação** | Exporte sessões do Tabby e importe o arquivo de volta para o Tabby ou para o MobaXterm |
+| 📁 | **Hierarquia de pastas** | Preserve regiões, cidades e POPs, com opção de usar uma pasta principal para cada importação/exportação |
+| 🔍 | **Prévia de conflitos** | Revise nome, IP/hostname, porta SSH e usuário antes de escolher Manter, Adicionar ou Substituir |
+| 👤 | **Alteração em massa** | Substitua usuários antigos ou específicos de outros colegas antes de importar |
+| 🌐 | **EN / PT-BR** | Interface no idioma selecionado no Tabby, com inglês como padrão |
+| 🔐 | **Privacidade** | Exportação de usuários sob confirmação; sem senhas, chaves privadas ou caminhos de chaves |
+
+**Validação prática:** o fluxo Tabby → MobaXterm → Tabby já foi testado manualmente com o plugin. Recursos avançados específicos do MobaXterm ainda podem exigir conferência individual.
+
+[**Baixar v0.2.2**](https://github.com/gugahartmann/Tabby-Profile-Bridge/releases/tag/v0.2.2) · [Notas da versão](docs/releases/v0.2.2.md) · [Texto de divulgação](docs/TABBY_COMMUNITY_ANNOUNCEMENT.md)
+
+
 
 ## Funcionalidades
 
@@ -20,7 +38,7 @@ Importe e exporte perfis SSH/Telnet entre o Tabby, arquivos CSV e o MobaXterm, p
 
 ## Instalação
 
-Após a publicação no npm, procure **tabby-profile-bridge** em Tabby → Configurações → Plugins. Também é possível obter o pacote .tgz nas [releases do GitHub](https://github.com/gugahartmann/Tabby-Profile-Bridge/releases) e usar um procedimento de instalação de plugins compatível com sua versão do Tabby.
+Quando estiver disponível no registro npm, procure **tabby-profile-bridge** em Tabby → Configurações → Plugins. Também é possível obter o pacote .tgz nas [releases do GitHub](https://github.com/gugahartmann/Tabby-Profile-Bridge/releases) e usar um procedimento de instalação de plugins compatível com sua versão do Tabby.
 
 Após ativar o plugin, abra **Configurações → Profile Bridge**.
 

@@ -1,0 +1,27 @@
+name: Update Profile Bridge v0.2.2 release notes
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'docs/releases/v0.2.2.md'
+  workflow_dispatch:
+permissions:
+  contents: write
+jobs:
+  update:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - name: Update existing release description
+        env:
+          GH_TOKEN: ${{ github.token }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          test "$GITHUB_REPOSITORY" = "gugahartmann/Tabby-Profile-Bridge"
+          gh release view v0.2.2 --repo "$GITHUB_REPOSITORY" >/dev/null
+          gh release edit v0.2.2 --repo "$GITHUB_REPOSITORY" --notes-file docs/releases/v0.2.2.md
+          echo "Updated release v0.2.2 description; existing tag and downloadable package remain unchanged."

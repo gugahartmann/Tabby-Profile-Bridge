@@ -5,6 +5,24 @@
 Import and export SSH/Telnet profiles across Tabby, CSV, and MobaXterm while preserving nested folders.
 
 **by gugahartmann** · [Português (Brasil)](README.pt-BR.md)
+## Latest release — v0.2.2
+
+**Profile Bridge is now available as a bilingual SSH/Telnet session exchange plugin for Tabby**, with CSV and MobaXterm `.mxtsessions` support.
+
+| | Feature | What it does |
+| --- | --- | --- |
+| ↔ | **Two-way exchange** | Export from Tabby and import the exported file back into Tabby or MobaXterm |
+| 📁 | **Nested folder preservation** | Keep regional, location and device groups; optionally place an import/export inside a parent folder |
+| 🔍 | **Review before importing** | Inspect name, IP/hostname, SSH port and username, then choose Keep, Add or Replace |
+| 👤 | **Bulk username changes** | Update legacy or colleague-specific usernames before committing imported profiles |
+| 🌐 | **EN / PT-BR** | Follow Tabby's language automatically; English is the fallback |
+| 🔐 | **Privacy by default** | Opt in to usernames; passwords, private keys and key paths are not exported |
+
+**Real-world check:** a Tabby → MobaXterm → Tabby exchange has been manually validated with the plugin. MobaXterm-specific advanced settings may still require manual review.
+
+[**Download v0.2.2**](https://github.com/gugahartmann/Tabby-Profile-Bridge/releases/tag/v0.2.2) · [Release notes](docs/releases/v0.2.2.md) · [Community announcement](docs/TABBY_COMMUNITY_ANNOUNCEMENT.md)
+
+
 
 ## Features
 
@@ -20,7 +38,7 @@ Import and export SSH/Telnet profiles across Tabby, CSV, and MobaXterm while pre
 
 ## Install
 
-After the package is published on npm, find **tabby-profile-bridge** in Tabby → Settings → Plugins. You can also obtain an installable .tgz from [GitHub Releases](https://github.com/gugahartmann/Tabby-Profile-Bridge/releases), using a plugin installation workflow supported by your Tabby version.
+When available in the npm registry, find **tabby-profile-bridge** in Tabby → Settings → Plugins. You can also obtain an installable .tgz from [GitHub Releases](https://github.com/gugahartmann/Tabby-Profile-Bridge/releases), using a plugin installation workflow supported by your Tabby version.
 
 Open **Settings → Profile Bridge** after enabling the plugin.
 
